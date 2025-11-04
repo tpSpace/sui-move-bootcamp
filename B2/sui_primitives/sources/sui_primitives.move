@@ -1,4 +1,5 @@
 module sui_primitives::sui_primitives;
+
 #[test_only]
 use sui::dynamic_field;
 #[test_only]
@@ -8,45 +9,84 @@ use std::string::{String};
 #[test_only]
 use sui::test_scenario;
 
+const ENumbersNotEqual: u64 = 601;
+
 #[test]
 fun test_numbers() {
     let a = 50;
     let b = 50;
-    assert!(a == b, 601);
+    assert!(a == b, ENumbersNotEqual);
+}
+
+// #[test]
+// fun test_overflow() {
+//     let a = 65036;
+//     let b = 500;
+//     let c: u16 = a+b;
+//     assert!(c == 65536u32, 604);
+// }
+
+#[test]
+fun test_mutability() {
+    let a = 100;
+    let a = a-10;
+    assert!(a == 90, 605);
 }
 
 #[test]
-fun test_overflow() {
+fun test_boolean() {
     let a = 500;
-    let b = 500;
+    let b = 600;
+    let greater = b > a;
 
-    assert!(1000 == 1000u16, 604);
+    assert!(greater == true, 606);
 }
 
 #[test]
-fun test_mutability() {}
-
-#[test]
-fun test_boolean() {}
-
-#[test]
-fun test_loop() {}
+fun test_loop() {
+    let mut i = 0;
+    while (i < 5) {
+        i = i + 1;
+    };
+    assert!(i == 5, 607);
+    std::debug::print(&i);
+}
 
 #[test]
 fun test_vector() {
     let mut myVec: vector<u8> = vector[10, 20, 30];
+    assert!(myVec.length() == 3, 111);
+    assert!(myVec.is_empty() == true, 112);
+    myVec.push_back(40);
+    assert!(myVec.length() == 4, 113);
 
-    assert!(myVec.is_empty() == true);
+    let last_value = myVec.pop_back();
+    assert!(last_value == 40, 114);
 }
 
 #[test]
 fun test_string() {
     let myStringArr: vector<u8> = b"Hello, World!";
+    let myString = myStringArr.to_string();
+
+    std::debug::print(&myString.length());
+    std::debug::print(&myString);
+    std::debug::print(&myStringArr);
 }
 
 #[test]
 fun test_string2() {
     let myStringArr = b"Hello, World!";
+
+    let mut i = 0;
+    let mut indexOfW = 0;
+    while (i < myStringArr.length()) {
+        if (myStringArr[i] == 87) {
+            indexOfW = i;
+        };
+        i = i + 1;
+    };
+    assert!(indexOfW == 7, 608);
 }
 
 public struct Container has key {
