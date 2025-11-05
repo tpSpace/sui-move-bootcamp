@@ -11,18 +11,30 @@ interface Response {
   senderSUIBalanceChange: number;
 }
 
-/**
- * Parses the balance changes as they are returned by the SDK.
- * Filters out and formats the ones that correspond to SUI tokens and to the defined sender and recipient addresses.
- */
 export const parseBalanceChanges = ({
   balanceChanges,
   senderAddress,
   recipientAddress,
 }: Args): Response => {
-  // TODO: Implement the function
+  const SUI_TYPE = "0x2::sui::SUI";
+  console.log(balanceChanges);
+  const recipientSUIBalanceChange = balanceChanges
+    .filter((change) => change.coinType === SUI_TYPE)
+    .filter((change) => {
+      // owner in latest SDK is a string when it's an address owner
+      return change.owner === recipientAddress;
+    })
+    .reduce((acc, change) => acc + Number(change.amount), 0);
+
+  const senderSUIBalanceChange = balanceChanges
+    .filter((change) => change.coinType === SUI_TYPE)
+    .filter((change) => {
+      return change.owner === senderAddress;
+    })
+    .reduce((acc, change) => acc + Number(change.amount), 0);
+
   return {
-    recipientSUIBalanceChange: 0,
-    senderSUIBalanceChange: 0,
-  }
+    recipientSUIBalanceChange,
+    senderSUIBalanceChange,
+  };
 };
