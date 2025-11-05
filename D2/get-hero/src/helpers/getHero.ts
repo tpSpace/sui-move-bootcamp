@@ -7,4 +7,15 @@ import { suiClient } from "../suiClient";
  */
 export const getHero = async (id: string): Promise<SuiObjectResponse> => {
   //Implement the function to get the hero object by its ID
+  const objectResponse = await suiClient.getObject({
+    id,
+    options: {
+      showContent: true,
+      showType: true,
+    },
+  });
+  if (!objectResponse.data) {
+    throw new Error(`Hero object not found with id: ${id}`);
+  }
+    return objectResponse;
 };
