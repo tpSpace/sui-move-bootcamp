@@ -1,4 +1,5 @@
 module capability::hero;
+
 use std::string::String;
 
 public struct Hero has key {
@@ -11,20 +12,26 @@ public struct AdminCap has key {
 }
 
 fun init(ctx: &mut TxContext) {
-    // create a new AdminCap
-
-    // transfer the AdminCap to the publisher wallet
+    let admin_cap = AdminCap { id: object::new(ctx) };
+    transfer::transfer(admin_cap, tx_context::sender(ctx));
 }
 
 public fun create_hero(_: &AdminCap, name: String, ctx: &mut TxContext): Hero {
-    // create a new Hero resource
+    let hero = Hero {
+        id: object::new(ctx),
+        name,
+    };
+    hero
 }
 
 public fun transfer_hero(_: &AdminCap, hero: Hero, to: address) {
-    // transfer the Hero resource to the user
+    transfer::transfer(hero, to);
 }
 
 public fun new_admin(_: &AdminCap, to: address, ctx: &mut TxContext) {
+    let admin_cap = AdminCap { id: object::new(ctx) };
+
+    transfer::transfer(admin_cap, to);
 }
 
 // ===== TEST ONLY =====
@@ -102,6 +109,4 @@ fun test_admin_can_transfer_hero() {
 }
 
 #[test]
-fun test_admin_can_create_more_admins() {
-    // TODO: Implement test
-}
+fun test_admin_can_create_more_admins() {}

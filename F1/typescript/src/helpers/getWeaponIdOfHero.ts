@@ -1,4 +1,4 @@
-import { SuiParsedData } from "@mysten/sui/dist/cjs/client";
+import { SuiParsedData } from "@mysten/sui/client";
 import { suiClient } from "../suiClient";
 
 /**
@@ -6,8 +6,27 @@ import { suiClient } from "../suiClient";
  * We need to get the Hero object, and find the value of the corresponding nested field.
  */
 export const getWeaponIdOfHero = async (
-  heroId: string
+    heroId: string,
 ): Promise<string | undefined> => {
-  // TODO: Implement this function
-  return undefined;
+    const hero = await suiClient.getObject({
+        id: heroId,
+        options: {
+            showContent: true,
+        },
+    });
+    console.log(hero);
+
+    if (!hero.data) {
+        return undefined;
+    }
+    const content = hero.data.content as Extract<
+        SuiParsedData,
+        { dataType: "moveObject" }
+    >;
+
+    const fields = content.fields as {
+        weapon: { fields: { id: { id: string } } };
+    };
+
+    return fields.weapon.fields.id.id;
 };

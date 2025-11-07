@@ -10,20 +10,12 @@ module publisher::hero {
     }
 
     fun init(ctx: &mut TxContext) {
-        // create Publisher and transfer it to the publisher wallet
+        package::claim_and_keep(otw, ctx)
     }
 
-    public fun create_hero(publisher: &Publisher, name: String, ctx: &mut TxContext): Hero {
-        // verify that publisher is from the same module
+    public fun create_hero(publisher: &Publisher, name: String, ctx: &mut TxContext): Hero {}
 
-        // create Hero resource
-    }
-
-    public fun transfer_hero(publisher: &Publisher, hero: Hero, to: address) {
-        // verify that publisher is from the same module
-
-        // transfer the Hero resource to the user
-    }
+    public fun transfer_hero(publisher: &Publisher, hero: Hero, to: address) {}
 
     // ===== TEST ONLY =====
 
@@ -76,9 +68,7 @@ module publisher::hero {
     }
 
     #[test]
-    fun test_admin_can_transfer_hero() {
-        // TODO: Implement test
-    }
+    fun test_admin_can_transfer_hero() {}
 }
 
 #[test_only]
@@ -86,6 +76,7 @@ module publisher::hero_test {
     use publisher::hero;
     use sui::package::{Self, Publisher};
     use sui::test_scenario as ts;
+
     #[test_only]
     use std::unit_test::assert_eq;
 
